@@ -23,12 +23,6 @@ fn direction(code: &str) -> IResult<&str, i32> {
 
 fn get_rotation(code: &str) -> IResult<&str, i32> {
     let (rem, mut val) = character::complete::i32(code)?;
-    while (val > 99) {
-        val -= 100
-    }
-    while (val < 0) {
-        val += 100
-    }
     return Ok((rem, val));
 }
 
@@ -40,8 +34,8 @@ fn main() {
     for line in input.lines() {
         let (o, rot) = direction(line).unwrap();
         let (_, magnitude) = get_rotation(o).unwrap();
-        let angle = rot * magnitude;
-        println!("{line} -> {rot}, {o}: {angle}");
+        let mut angle = rot * magnitude;
+
         cumsum += angle;
         if (cumsum == 0) {
             cnt += 1;
@@ -50,6 +44,8 @@ fn main() {
         } else if (cumsum >= 100) {
             cumsum -= 100;
         }
+
+        println!("{line} -> {rot}, {o}: {angle}, {cumsum}");
     }
     println!("The number of zero crossings: {cnt}");
 }
